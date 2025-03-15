@@ -1,4 +1,4 @@
-FROM alpine/git:2.36.2 as download
+FROM alpine/git:2.36.2 AS download
 
 COPY clone.sh /clone.sh
 
@@ -38,6 +38,10 @@ ENV ROOT=/stable-diffusion-webui
 
 COPY --from=download /repositories/ ${ROOT}/repositories/
 RUN mkdir ${ROOT}/interrogate && cp ${ROOT}/repositories/clip-interrogator/clip_interrogator/data/* ${ROOT}/interrogate
+
+RUN --mount=type=cache,target=/root/.cache/pip \
+   pip uninstall -y typing_extensions && \
+   pip install typing_extensions==4.11.0
 
 RUN --mount=type=cache,target=/root/.cache/pip \
   pip install pyngrok xformers==0.0.26.post1 \
